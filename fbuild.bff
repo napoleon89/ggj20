@@ -1,0 +1,77 @@
+.Compiler = '/usr/bin/g++'
+.Linker = '/usr/bin/g++'
+.CompilerOptions = '-g -c "%1" -o "%2" -I$_WORKING_DIR_$/src -I$_WORKING_DIR_$/deps/include -std=c++17 -D PP_EDITOR'
+.LinkerOptions = '-o "%2" "%1"'
+.Librarian = '/usr/bin/ar'
+.LibrarianOptions = 'rcs "%2" "%1"'
+
+; ====================== Engine =========================
+
+Library('core')
+{
+	.CompilerInputPath = 'src/core/'
+	.CompilerOutputPath = "temp/core"
+	.LibrarianOutput = "build/core.a"
+}
+
+Library('engine')
+{
+	.CompilerInputPath = 'src/engine/'
+	.CompilerOutputPath = "temp/engine"
+	.LibrarianOutput = "build/engine.a"
+	.CompilerInputExcludedFiles = {'src/engine/enum.cpp'}
+}
+
+Library('game')
+{
+	.CompilerInputPath = 'src/game/'
+	.CompilerOutputPath = "temp/game"
+	.LibrarianOutput = "build/game.a"
+}
+
+Library('imgui')
+{
+	.CompilerInputPath = 'src/imgui/'
+	.CompilerOutputPath = "temp/imgui"
+	.LibrarianOutput = "build/imgui.a"
+}
+
+Library('nanovg')
+{
+	.CompilerInputPath = 'src/nanovg/'
+	.CompilerOutputPath = "temp/nanovg"
+	.LibrarianOutput = "build/nanovg.a"
+}
+
+ObjectList('main-lib')
+{
+	.CompilerInputPath = 'src/main/'
+	.CompilerOutputPath = "temp/main"
+}
+
+Executable('main')
+{
+	.Libraries = {'main-lib', 'game', 'engine', 'core', 'imgui', 'nanovg'}
+	.LinkerOutput = 'build/ggj20'
+	.LinkerOptions + ' -lSDL2 -lGLU -lGL -lGLEW -lc -lstdc++ -lrlottie'
+}
+
+Alias('all') 
+{
+	.Targets = {'main'}
+}
+
+; ====================== Tools =========================
+
+ObjectList('shader_compiler-lib')
+{
+	.CompilerInputPath = 'tools/shader_compiler/'
+	.CompilerOutputPath = "temp/shader_compiler"
+}
+
+Executable('shader_compiler')
+{
+	.Libraries = {'shader_compiler-lib', 'core', 'engine'}
+	.LinkerOutput = 'tools/build/shader_compiler'
+	.LinkerOptions + ' -lSDL2 -lGLU -lGL -lGLEW -lc -lstdc++'
+}

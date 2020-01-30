@@ -1,0 +1,137 @@
+gr_context = GrContext::MakeGL(GrGLMakeNativeInterface());
+	
+	uint32_t windowFormat = SDL_GetWindowPixelFormat((SDL_Window*)window->handle);
+    int contextType;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &contextType);
+ 
+	SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
+	
+	GLint fbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+	GrGLFramebufferInfo info;
+	info.fFBOID = fbo;
+ 
+	SkColorType colorType;
+ 
+	const char* pixel_format = SDL_GetPixelFormatName(windowFormat);
+ 
+	info.fFormat = GL_RGB8;
+	colorType = kRGB_888x_SkColorType;
+ 
+	GrBackendRenderTarget target(width, height, 1, 8, info);
+	SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
+	surface = SkSurface::MakeFromBackendRenderTarget(gr_context.get(), target,
+                                                                    kBottomLeft_GrSurfaceOrigin,
+                                                                    colorType, nullptr, &props);
+	SkCanvas* canvas = surface->getCanvas();
+    canvas->scale((float)width/dm.w, (float)height/dm.h);
+
+// ====================================================================================================
+
+void renderLayerSkia(const LOTLayerNode* layer, const SkRect& frame_rect) {
+	extern sk_sp<SkSurface> surface;
+	SkCanvas* canvas = surface->getCanvas();
+
+	for(u32 i = 0; i < layer->mNodeList.size; i++) {
+		const LOTNode* node = layer->mNodeList.ptr[i];
+		SkPath path;
+		u32 pt_walker = 0;
+		for(u32 j = 0; j < node->mPath.elmCount; j++) {
+			LottieElement element = (LottieElement)node->mPath.elmPtr[j];
+
+			switch(element) {
+				case LottieElement::MoveTo: {
+					f32 x = node->mPath.ptPtr[pt_walker++];
+					f32 y = node->mPath.ptPtr[pt_walker++];
+					path.moveTo(x, y);
+				} break;
+
+				case LottieElement::LineTo: {
+					f32 x = node->mPath.ptPtr[pt_walker++];
+					f32 y = node->mPath.ptPtr[pt_walker++];
+					path.lineTo(x, y);
+				} break;
+
+				case LottieElement::CubicTo: {
+					f32 x0 = node->mPath.ptPtr[pt_walker++];
+					f32 y0 = node->mPath.ptPtr[pt_walker++];
+					f32 x1 = node->mPath.ptPtr[pt_walker++];
+					f32 y1 = node->mPath.ptPtr[pt_walker++];
+					f32 x2 = node->mPath.ptPtr[pt_walker++];
+					f32 y2 = node->mPath.ptPtr[pt_walker++];
+					path.cubicTo(x0, y0, x1, y1, x2, y2);
+				} break;
+
+				case LottieElement::Close: {
+					path.close();
+				} break;
+			}
+		}
+
+		SkPaint paint;
+		switch(node->mFillRule) {
+			case FillEvenOdd: path.setFillType(SkPathFillType::kEvenOdd); break;
+			case FillWinding: path.setFillType(SkPathFillType::kWinding); break;
+		}
+
+		paint.setAntiAlias(true);
+		paint.setColor(SkColorSetARGB(node->mColor.a, node->mColor.r, node->mColor.g, node->mColor.b));
+		
+		if(node->mStroke.enable) {
+			paint.setStyle(SkPaint::Style::kStroke_Style);
+			paint.setStrokeWidth(node->mStroke.width);
+
+			
+			switch(node->mStroke.cap) {
+				case CapFlat: paint.setStrokeCap(SkPaint::Cap::kButt_Cap); break;
+				case CapSquare: paint.setStrokeCap(SkPaint::Cap::kSquare_Cap); break;
+				case CapRound: paint.setStrokeCap(SkPaint::Cap::kRound_Cap); break;
+			}
+
+			switch(node->mStroke.join) {
+				case JoinMiter: paint.setStrokeJoin(SkPaint::Join::kMiter_Join); break;
+				case JoinBevel: paint.setStrokeJoin(SkPaint::Join::kBevel_Join); break;
+				case JoinRound: paint.setStrokeJoin(SkPaint::Join::kRound_Join); break;
+			}
+
+			paint.setStrokeMiter(node->mStroke.miterLimit);
+		} else {
+			paint.setStyle(SkPaint::Style::kFill_Style);
+		}
+
+		if(layer->mMatte == LOTMatteType::MatteAlpha) {
+			clipping = true;
+			SkPaint mask_layer_paint;
+			mask_layer_paint.setAntiAlias(true);
+			canvas->saveLayer(&frame_rect, &mask_layer_paint);
+			
+			canvas->drawPath(path, paint);
+
+			SkPaint content_layer_paint;
+			content_layer_paint.setBlendMode(SkBlendMode::kSrcIn);
+			content_layer_paint.setAntiAlias(true);
+			canvas->saveLayer(&frame_rect, &content_layer_paint);
+
+			
+			// canvas->save();
+			// path.setFillType(SkPathFillType::)
+			// canvas->clipPath(path, SkClipOp::kIntersect, true);
+			
+		} else {
+			canvas->drawPath(path, paint);
+			if(clipping) {
+				canvas->restore();
+				canvas->restore();
+				clipping = false;
+			}	
+		}
+
+	}
+
+	for(u32 i = 0; i < layer->mLayerList.size; i++) {
+		const LOTLayerNode* child = layer->mLayerList.ptr[i];
+		renderLayerSkia(child, frame_rect);
+		
+	}
+}

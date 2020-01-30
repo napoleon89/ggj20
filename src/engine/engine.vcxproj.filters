@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="allocators.cpp" />
+    <ClCompile Include="audio.cpp" />
+    <ClCompile Include="debug_renderer.cpp" />
+    <ClCompile Include="ecs.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="shaders.cpp" />
+    <ClCompile Include="timer.cpp" />
+    <ClCompile Include="profiler.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="imgui_impl.cpp" />
+    <ClCompile Include="gui_renderer.cpp" />
+    <ClCompile Include="font_rendering.cpp" />
+    <ClCompile Include="physics.cpp" />
+    <ClCompile Include="animation2d.cpp" />
+    <ClCompile Include="json.cpp" />
+    <ClCompile Include="reflection.cpp" />
+    <ClCompile Include="node_test.cpp" />
+    <ClCompile Include="bodymovin.cpp" />
+    <ClCompile Include="gui\gui.cpp" />
+    <ClCompile Include="gui\elements\lists.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="allocators.h" />
+    <ClInclude Include="audio.h" />
+    <ClInclude Include="debug_renderer.h" />
+    <ClInclude Include="ecs.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="shaders.h" />
+    <ClInclude Include="static_mesh.h" />
+    <ClInclude Include="timer.h" />
+    <ClInclude Include="profiler.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="imgui_impl.h" />
+    <ClInclude Include="ecs_template_test.h" />
+    <ClInclude Include="gui_renderer.h" />
+    <ClInclude Include="font_rendering.h" />
+    <ClInclude Include="physics.h" />
+    <ClInclude Include="animation2d.h" />
+    <ClInclude Include="json.h" />
+    <ClInclude Include="reflection.h" />
+    <ClInclude Include="node_test.h" />
+    <ClInclude Include="bodymovin.h" />
+    <ClInclude Include="gui\gui.h" />
+    <ClInclude Include="gui\elements\lists.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="engine.natvis" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="core.cpp" />
+    <ClCompile Include="platform\win32_platform.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp" />
+    <ClCompile Include="utils\string_utils.cpp" />
+    <ClCompile Include="utils\hashing.cpp" />
+    <ClCompile Include="utils\args.cpp" />
+    <ClCompile Include="memory.cpp" />
+    <ClCompile Include="platform\sdl_platform.cpp" />
+    <ClCompile Include="renderer\gl_render_context.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="render_context.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="tiny_obj_loader_c.h" />
+    <ClInclude Include="math.h" />
+    <ClInclude Include="std.h" />
+    <ClInclude Include="utils\string_utils.h" />
+    <ClInclude Include="collections\dictionary.h" />
+    <ClInclude Include="collections\dynamic_array.h" />
+    <ClInclude Include="collections\iterator.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="utils\hashing.h" />
+    <ClInclude Include="utils\event.h" />
+    <ClInclude Include="utils\args.h" />
+    <ClInclude Include="memory.h" />
+    <ClInclude Include="stb_truetype.h" />
+    <ClInclude Include="stb_rect_pack.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="collections\buffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="platform">
+      <UniqueIdentifier>{92937085-1a5e-40e9-8e73-09ec36ce8c06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{f88348f3-5b9c-4eb4-8ff5-ea70801d1561}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

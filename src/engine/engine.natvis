@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="DynamicArray&lt;*&gt;">
+		<DisplayString>{{ count={count} }}</DisplayString>
+		<Expand>
+			<Item Name="[count]" ExcludeView="simple">count</Item>
+			<Item Name="[capacity]" ExcludeView="simple">capacity</Item>
+			<ArrayItems>
+				<Size>count</Size>
+				<ValuePointer>data</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="Dictionary&lt;*&gt;">
+		<DisplayString>{{ count={count} }}</DisplayString>
+		<Expand>
+			<Item Name="[count]" ExcludeView="simple">count</Item>
+			<Item Name="[size]" ExcludeView="simple">size</Item>
+			<Item Name="[base_size]" ExcludeView="simple">base_size</Item>
+			<!--<IndexListItems>
+				<Size>size</Size>
+				<ValueNode>items[$i]</ValueNode>
+			</IndexListItems>-->
+
+			<CustomListItems MaxItemsPerView="1024">
+				<Variable Name="i" InitialValue="0"/>
+				<Variable Name="j" InitialValue="0"/>
+				<Size>count</Size>
+				<Loop>
+					<If Condition="item_states[i] == ItemState::Full">
+						<Item>items[i]</Item>
+						
+						<Exec>j++</Exec>
+						<Break Condition="j == count"/>
+					</If>
+					<Exec>i++</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+</AutoVisualizer>

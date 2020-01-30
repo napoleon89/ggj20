@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="assets.cpp" />
+    <ClCompile Include="reflection.cpp" />
+    <ClCompile Include="world.cpp" />
+    <ClCompile Include="..\game\camera.cpp" />
+    <ClCompile Include="..\game\editor.cpp" />
+    <ClCompile Include="..\game\FastNoise.cpp" />
+    <ClCompile Include="..\game\game.cpp" />
+    <ClCompile Include="..\game\enemy.cpp" />
+    <ClCompile Include="..\game\player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\game\assets.h" />
+    <ClInclude Include="..\game\camera.h" />
+    <ClInclude Include="..\game\editor.h" />
+    <ClInclude Include="..\game\FastNoise.h" />
+    <ClInclude Include="..\game\game.h" />
+    <ClInclude Include="..\game\memory.h" />
+    <ClInclude Include="..\game\world.h" />
+    <ClInclude Include="..\game\enemy.h" />
+    <ClInclude Include="..\game\player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="reflection.template" />
+  </ItemGroup>
+</Project>
