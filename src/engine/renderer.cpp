@@ -1,7 +1,5 @@
 #include "renderer.h"
 #include <imgui/imgui.h>
-#include <rlottie/rlottie.h>
-#include <rlottie/rlottiecommon.h>
 
 #include <core/platform.h>
 #include <core/math.h>
@@ -236,7 +234,8 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 
 		nvgBeginPath(vg);
 		nvgMoveTo(vg, 0.0f, 0.0f);
-		nvgLineTo(vg, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
+		// nvgLineTo(vg, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
+		nvgBezierTo(vg, -10.0f, 0.0f, -10.0f, frame->world_mouse_pos.y, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
 		nvgStrokeColor(vg, nvgRGB(0, 0, 0));
 		nvgLineCap(vg, NVG_ROUND);
 		nvgStroke(vg);

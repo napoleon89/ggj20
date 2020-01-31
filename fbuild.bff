@@ -53,7 +53,7 @@ Executable('main')
 {
 	.Libraries = {'main-lib', 'game', 'engine', 'core', 'imgui', 'nanovg'}
 	.LinkerOutput = 'build/ggj20'
-	.LinkerOptions + ' -lSDL2 -lGLU -lGL -lGLEW -lc -lstdc++ -lrlottie'
+	.LinkerOptions + ' -lSDL2 -lGLU -lGL -lGLEW -lc -lstdc++'
 }
 
 Alias('all') 
