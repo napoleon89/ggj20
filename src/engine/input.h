@@ -51,6 +51,11 @@ enum class AnalogStick {
 	Right
 };
 
+enum class Trigger {
+	Left,
+	Right,
+};
+
 struct ControllerState {
 	ButtonState buttons[(u32)ControllerButton::Count];
 };
@@ -67,7 +72,6 @@ private:
 	inline static ControllerState controller_states[2];
 	inline static ControllerState* old_controller = nullptr;
 	inline static ControllerState* new_controller = nullptr;
-	
 
 public:
 
@@ -91,6 +95,7 @@ public:
 
 	static void onControllerAdded(const u32 index);
 	static Vec2 getAnalogStick(const AnalogStick stick);
+	static f32 getTrigger(const Trigger trigger);
 	static bool isControllerButtonDown(const ControllerButton button);
 	static bool isControllerButtonDownOnce(const ControllerButton button);
 };

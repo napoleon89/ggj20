@@ -294,9 +294,15 @@ struct Vec2DTemplate {
 	}
 
 	static inline Vec2DTemplate<type> rotate(Vec2DTemplate<type> a, type radians) {
-		type theta = angle(up(), a);
-		theta += radians;
-		return Vec2DTemplate<type>(Math::sin(theta), Math::cos(theta));
+		// type theta = angle(up(), a);
+		// theta += radians;
+		// return Vec2DTemplate<type>(Math::sin(theta), Math::cos(theta));
+		Vec2DTemplate<type> result = Vec2DTemplate<type>();
+		result.x = a.x * Math::cos(radians) - a.y * Math::sin(radians);
+		result.y = a.x * Math::sin(radians) + a.y * Math::cos(radians);
+		return result;
+
+
 	}
 
 	static inline Vec2DTemplate<type> lerp(Vec2DTemplate<type> a, Vec2DTemplate<type> b, f32 t) {

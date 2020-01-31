@@ -4,7 +4,8 @@
 #include <string>
 #include <variant>
 #include <atomic>
-
+#include <random>
+#include <ctime>
 
 // #define STB_RECT_PACK_IMPLEMENTATION
 // #include <core/stb_rect_pack.h>
@@ -139,6 +140,8 @@ int main(int arg_count, char* args[]) {
 		g_running = false; 
 	});
 
+	srand(std::time(0));
+
 	MemoryStore mem_store = {};
 	mem_store.game_memory = {0, Megabytes(8)};
 	mem_store.asset_memory = {0, Megabytes(8)};
@@ -204,6 +207,8 @@ int main(int arg_count, char* args[]) {
 	
 	game->init(window, &audio_engine);
 	Input::init();
+
+	bool show_frame_time = false;
 	
 	while(g_running) {
 		frame_timer.start();
@@ -229,15 +234,21 @@ int main(int arg_count, char* args[]) {
 			g_running = false;
 		}
 
-		ImGui::SetNextWindowBgAlpha(0.35f);
-		ImGui::SetNextWindowPos(ImVec2(20, 20));
-    	ImGui::Begin("Debug Stuff", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking | 
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | 
-			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
-		{
-			ImGui::Text("Frame time: %.3f", delta * 1000.0f);
+		if(show_frame_time) {
+			ImGui::SetNextWindowBgAlpha(0.35f);
+			ImGui::SetNextWindowPos(ImVec2(20, 20));
+			ImGui::Begin("Debug Stuff", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking | 
+				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | 
+				ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+			{
+				ImGui::Text("Frame time: %.3f", delta * 1000.0f);
+			}
+			ImGui::End();
 		}
-		ImGui::End();
+
+		if(Input::isKeyDownOnce(Key::F2)) {
+			show_frame_time = !show_frame_time;
+		}
 
 		if(Input::isKeyDownOnce(Key::F11)) {
 			Platform::setWindowFullscreen(window, !Platform::isWindowFullscreen(window));

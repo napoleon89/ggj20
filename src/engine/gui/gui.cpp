@@ -120,7 +120,7 @@ static void paintElement(Element *element, const Vec2 parent_position, const Vec
 		element->on_click();
 	}
 
-	if(element->color.a > 0.0f && element->visible) {
+	if(element->visible) {
 		GUIBox box = {
 			new_position,
 			element->scratch_render_box.size,

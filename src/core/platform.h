@@ -60,6 +60,8 @@ enum class ControllerAxis {
 	LeftY,
 	RightX,
 	RightY,
+	RightTrigger,
+	LeftTrigger,
 	Count,
 };
 
@@ -68,6 +70,7 @@ enum class ControllerButton {
 	B,
 	X,
 	Y,
+	R1,
 	Count
 };
 

@@ -59,7 +59,7 @@ void renderGUIFrame(const GUIFrame& frame) {
 				} break;
 			}
 			
-			nvgFillColor(vg, nvgRGBAf(1.0f, 1.0f, 1.0f, 1.0f));
+			nvgFillColor(vg, nvgRGBAf(box.text_color.r, box.text_color.g, box.text_color.b, box.text_color.a));
 			nvgTextAlign(vg, x_text_align | y_text_align);
 			nvgTextBox(vg, text_x, text_y, box.size.x, box.text.c_str(), nullptr);
 		}

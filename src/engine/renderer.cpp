@@ -230,15 +230,15 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 		nvgTranslate(vg, -frame->camera_position.x, -frame->camera_position.y);
 
 		
-		DebugRenderQueue::addAABB(Vec2(), Vec2(1.0f));
+		// DebugRenderQueue::addAABB(Vec2(), Vec2(1.0f));
 
-		nvgBeginPath(vg);
-		nvgMoveTo(vg, 0.0f, 0.0f);
-		// nvgLineTo(vg, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
-		nvgBezierTo(vg, -10.0f, 0.0f, -10.0f, frame->world_mouse_pos.y, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
-		nvgStrokeColor(vg, nvgRGB(0, 0, 0));
-		nvgLineCap(vg, NVG_ROUND);
-		nvgStroke(vg);
+		// nvgBeginPath(vg);
+		// nvgMoveTo(vg, 0.0f, 0.0f);
+		// // nvgLineTo(vg, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
+		// nvgBezierTo(vg, -10.0f, 0.0f, -10.0f, frame->world_mouse_pos.y, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
+		// nvgStrokeColor(vg, nvgRGB(0, 0, 0));
+		// nvgLineCap(vg, NVG_ROUND);
+		// nvgStroke(vg);
 
 		nvgEndFrame(vg);
 	}

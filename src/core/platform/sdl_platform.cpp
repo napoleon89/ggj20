@@ -325,6 +325,8 @@ SDL_GameControllerAxis sdl_axes[(u32)ControllerAxis::Count] = {
 	/* LeftY */ SDL_CONTROLLER_AXIS_LEFTY,
 	/* RightX */ SDL_CONTROLLER_AXIS_RIGHTX,
 	/* RightY */ SDL_CONTROLLER_AXIS_RIGHTY,
+	/* RightTrigger */ SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
+	/* LeftTrigger */ SDL_CONTROLLER_AXIS_TRIGGERLEFT,
 };
 
 f32 Platform::getControllerAxis(const ControllerHandle controller, const ControllerAxis axis) {
@@ -343,6 +345,7 @@ SDL_GameControllerButton sdl_buttons[(u32)ControllerButton::Count] = {
 	/* B */ SDL_CONTROLLER_BUTTON_B,
 	/* X */ SDL_CONTROLLER_BUTTON_X,
 	/* Y */ SDL_CONTROLLER_BUTTON_Y,
+	/* R1 */ SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
 };
 
 bool Platform::getControllerButton(const ControllerHandle controller, const ControllerButton button) {
