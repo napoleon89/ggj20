@@ -14,7 +14,7 @@
 #include <nanovg/nanosvg.h>
 
 #include <game/assets.h>
-
+#include <game/game.h>
 
 
 struct PerSceneConstants {
@@ -111,6 +111,96 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 	scene_constants.projection = view_projection;
 	
 	RenderContext::clear(clear_color);
+
+	RenderContext::pushDebugGroup("Vector Render");
+	{
+		ProfileScope("nanoVG");
+		extern NVGcontext* vg;
+		nvgBeginFrame(vg, window_width, window_height, 1.0f);
+
+		Vec2 camera_size = frame->camera_bounds.getSize();
+		nvgScale(vg, (f32)window_width / camera_size.x, (f32)window_height / camera_size.y);
+		nvgTranslate(vg, camera_size.x * 0.5f, camera_size.y * 0.5f);
+		nvgScale(vg, 1.0f, -1.0f);
+		nvgTranslate(vg, -frame->camera_position.x, -frame->camera_position.y);
+
+		nvgBeginPath(vg);
+		nvgCircle(vg, 0.0f, 0.0f, frame->game->arena_radius);
+		
+		nvgStrokeColor(vg, nvgRGB(104,32,121));
+		nvgStroke(vg);
+
+		nvgBeginPath(vg);
+		nvgCircle(vg, 0.0f, 0.0f, frame->game->haven.radius);
+		nvgFillColor(vg, nvgRGB(104,32,121));
+		nvgFill(vg);
+
+		frame->game->registry.view<Grenade, Position>().each([&](const entt::entity& entity, Grenade& grenade, Position& position) {
+			nvgBeginPath(vg);
+			nvgCircle(vg, position.position.x, position.position.y, grenade.radius);
+			nvgFillColor(vg, nvgRGBA(3, 244, 252, 150));
+			nvgFill(vg);
+		});
+
+		frame->game->registry.view<Position, Crack>().each([&](Position& pos, Crack& crack) {
+			const Vec2 position = pos.position;
+			nvgBeginPath(vg);
+			nvgCircle(vg, position.x, position.y, 0.5f); 
+			nvgFillColor(vg, nvgRGBAf(0.75f, 0.0f, 0.0f, 1.0f));
+			nvgFill(vg);
+
+			nvgBeginPath(vg);
+			nvgMoveTo(vg, position.x, position.y);
+			// nvgCircle(vg, position.x, position.y, 0.5f);
+			Vec2 previous_point = position;
+			if(crack.points.count > 0) {
+				for(u32 i = 0; i < crack.points.count-1; i++) {
+					Vec2 point = crack.points.getCopy(i);
+					Vec2 dir = Vec2::normalize(point - previous_point);
+					Vec2 l_perp = Vec2::lPerp(dir);
+					Vec2 r_perp = Vec2::lPerp(dir);
+					nvgLineTo(vg, point.x, point.y);
+					previous_point = point;
+				}
+			}
+
+			f32 d = crack.timer / crack.max_timer;
+			Vec2 start_point = position;
+			if(crack.points.count > 0) {
+				if(crack.points.count > 1) {
+					start_point = crack.points.getCopy(crack.points.count-2);
+				}
+				Vec2 point = crack.points.getCopy(crack.points.count-1);
+				
+				Vec2 end = Vec2::lerp(start_point, point, 1.0f - d);
+				nvgLineTo(vg, end.x, end.y);
+			}
+
+			nvgLineCap(vg, NVG_ROUND);
+			nvgStrokeColor(vg, nvgRGBAf(0.8f, 0.0f, 0.0f, 1.0f));
+			nvgStroke(vg);
+
+			
+		});
+
+		frame->game->registry.view<Position, EnemyHealth>().each([](Position& position, EnemyHealth& health) {
+			
+			f32 w = 2.0f;
+			f32 health_w = (health.health / health.max_health) * w;
+			nvgBeginPath(vg);
+			nvgRect(vg, position.position.x - w * 0.5f, position.position.y + 1.0f, w, 0.2f);
+			nvgFillColor(vg, nvgRGBAf(1.0f, 0.0f, 0.0f, 1.0f));
+			nvgFill(vg);
+
+			nvgBeginPath(vg);
+			nvgRect(vg, position.position.x - w * 0.5f, position.position.y + 1.0f, health_w, 0.2f);
+			nvgFillColor(vg, nvgRGBAf(0.0f, 1.0f, 0.0f, 1.0f));
+			nvgFill(vg);
+		});
+
+		nvgEndFrame(vg);
+	}
+	RenderContext::popDebugGroup();
 	
 	RenderContext::bindShader(&Assets::shaders.sprite);
 	RenderContext::bindVertexArray(&g_sprite_layout);
@@ -149,7 +239,15 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 		obj_data.uv_scale = uv_scale;
 		
 		obj_data.color = sprite.color;
-		obj_data.model = Mat4::translate(Vec3(sprite.position, z)) * Mat4::scale(Vec3(sprite.size, 1.0f));
+		obj_data.model = Mat4::translate(Vec3(sprite.position, 0.0f));
+		if(sprite.rotation != 0.0f) {
+			Vec3 pivot = Vec3(sprite.size * 0.5f, 0.0f);
+			obj_data.model *= Mat4::translate(pivot);
+			obj_data.model *= Mat4::rotateZ(sprite.rotation);
+			obj_data.model *= Mat4::translate(-pivot);
+
+		}
+		obj_data.model *= Mat4::scale(Vec3(sprite.size, 1.0f));
 		// DebugRenderQueue::addAABB(uv_offset, uv_offset + Vec2(2.0f));
 		RenderContext::updateShaderConstant(&g_per_object_constants, &obj_data);
 		if(prev_bound_tex != sprite.sheet) {
@@ -189,10 +287,20 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 	// RenderContext::setMultisampleEnabled(true);
 	// RenderContext::setAlphaToCoverageEnabled(true);
 	
+	
+	
+	// DebugRenderQueue::addLine(Vec2(), Vec2(1.0f, 0.0f), Colors::red);
+	// DebugRenderQueue::addLine(Vec2(), Vec2(0.0f, 1.0f), Colors::green);
+	
+	// RenderContext::setMultisampleEnabled(false);
+	// RenderContext::setAlphaToCoverageEnabled(false);
+
+	
+
 	{
 		ProfileScope("sortSprites");
 		std::sort(frame->sprites.data, frame->sprites.data + frame->sprites.count, [](const RenderSprite& a, const RenderSprite& b) {
-			return (u64)a.sheet > (u64)b.sheet;
+			return a.position.y > b.position.y;
 		});
 	}
 	
@@ -210,39 +318,6 @@ void Renderer::processRenderFrame(RenderFrame *frame) {
 	
 	
 	RenderContext::destroyVertexBuffer(&vb);
-	
-	DebugRenderQueue::addLine(Vec2(), Vec2(1.0f, 0.0f), Colors::red);
-	DebugRenderQueue::addLine(Vec2(), Vec2(0.0f, 1.0f), Colors::green);
-	
-	// RenderContext::setMultisampleEnabled(false);
-	// RenderContext::setAlphaToCoverageEnabled(false);
-
-	RenderContext::pushDebugGroup("Vector Render");
-	{
-		ProfileScope("nanoVG");
-		extern NVGcontext* vg;
-		nvgBeginFrame(vg, window_width, window_height, 1.0f);
-
-		Vec2 camera_size = frame->camera_bounds.getSize();
-		nvgScale(vg, (f32)window_width / camera_size.x, (f32)window_height / camera_size.y);
-		nvgTranslate(vg, camera_size.x * 0.5f, camera_size.y * 0.5f);
-		nvgScale(vg, 1.0f, -1.0f);
-		nvgTranslate(vg, -frame->camera_position.x, -frame->camera_position.y);
-
-		
-		// DebugRenderQueue::addAABB(Vec2(), Vec2(1.0f));
-
-		// nvgBeginPath(vg);
-		// nvgMoveTo(vg, 0.0f, 0.0f);
-		// // nvgLineTo(vg, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
-		// nvgBezierTo(vg, -10.0f, 0.0f, -10.0f, frame->world_mouse_pos.y, frame->world_mouse_pos.x, frame->world_mouse_pos.y);
-		// nvgStrokeColor(vg, nvgRGB(0, 0, 0));
-		// nvgLineCap(vg, NVG_ROUND);
-		// nvgStroke(vg);
-
-		nvgEndFrame(vg);
-	}
-	RenderContext::popDebugGroup();
 	
 	DebugRenderQueue::flushRender(&Assets::shaders.editor, view_projection);
 	

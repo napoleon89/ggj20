@@ -12,7 +12,7 @@ void Camera::onResize(u32 window_width, u32 window_height) {
 }
 
 Mat4 Camera::getView(bool include_translation) const {
-	return Mat4::translate(Vec3(-position, 0.0f));
+	return Mat4::translate(Vec3(-getPosition(), 0.0f));
 }
 
 Mat4 Camera::getViewProjection(bool include_translation) const {
@@ -30,12 +30,28 @@ Vec2 Camera::transformWindowPosition(const Vec2 window_position) {
 	result.y = 1.0f - result.y;
 	result -= Vec2(0.5f, 0.5f);
 	result *= size;
-	result += position;
+	result += getPosition();
 	
 	return result;
 }
 
+void Camera::shake(Vec2 amount) {
+	shake_offset += amount;
+}
+
+Vec2 Camera::getPosition() const {
+	return position + shake_offset;
+}
+
+void Camera::setPosition(Vec2 position) {
+	this->position = position;
+}
+
+void Camera::update(f32 delta) {
+	shake_offset *= 0.5f * delta;
+}
+
 AABB Camera::getBounds() const {
 	Vec2 half_size = size * 0.5f;
-	return {position - half_size, position + half_size};
+	return {getPosition() - half_size, getPosition() + half_size};
 }

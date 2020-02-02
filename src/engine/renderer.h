@@ -10,6 +10,7 @@
 
 struct Assets;
 struct SpriteAnimationGroup;
+struct GameState;
 
 struct RenderSprite {
 	Texture2D* sheet;
@@ -17,6 +18,7 @@ struct RenderSprite {
 	Vec2 uv_scale = Vec2(1.0f);
 	Vec2 position;
 	Vec2 size;
+	f32 rotation = 0.0f;
 	bool flip_x;
 	Color color = Colors::white;
 
@@ -33,6 +35,7 @@ struct RenderFrame {
 	DynamicArray<RenderSprite> background_sprites;
 	DynamicArray<RenderSprite> sprites;
 	f32 frame_time;
+	GameState* game;
 };
 
 struct Renderer {

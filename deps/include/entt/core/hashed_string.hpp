@@ -3,6 +3,7 @@
 
 
 #include <cstddef>
+#include <cstdint>
 #include "../config/config.h"
 
 
@@ -93,7 +94,7 @@ public:
      * @return The numeric representation of the string.
      */
     template<std::size_t N>
-    static constexpr hash_type to_value(const value_type (&str)[N]) ENTT_NOEXCEPT {
+    static constexpr hash_type value(const value_type (&str)[N]) ENTT_NOEXCEPT {
         return helper(traits_type::offset, str);
     }
 
@@ -102,7 +103,7 @@ public:
      * @param wrapper Helps achieving the purpose by relying on overloading.
      * @return The numeric representation of the string.
      */
-    static hash_type to_value(const_wrapper wrapper) ENTT_NOEXCEPT {
+    static hash_type value(const_wrapper wrapper) ENTT_NOEXCEPT {
         return helper(traits_type::offset, wrapper.str);
     }
 
@@ -112,7 +113,7 @@ public:
      * @param size Length of the string to hash.
      * @return The numeric representation of the string.
      */
-    static hash_type to_value(const value_type *str, std::size_t size) ENTT_NOEXCEPT {
+    static hash_type value(const value_type *str, std::size_t size) ENTT_NOEXCEPT {
         ENTT_ID_TYPE partial{traits_type::offset};
         while(size--) { partial = (partial^(str++)[0])*traits_type::prime; }
         return partial;
@@ -167,14 +168,14 @@ public:
         return hash;
     }
 
-    /**
-     * @brief Returns the human-readable representation of a hashed string.
-     * @return The string used to initialize the instance.
-     */
-    constexpr operator const value_type *() const ENTT_NOEXCEPT { return str; }
+    /*! @copydoc data */
+    constexpr operator const value_type *() const ENTT_NOEXCEPT { return data(); }
 
-    /*! @copydoc value */
-    constexpr operator hash_type() const ENTT_NOEXCEPT { return hash; }
+    /**
+     * @brief Returns the numeric representation of a hashed string.
+     * @return The numeric representation of the instance.
+     */
+    constexpr operator hash_type() const ENTT_NOEXCEPT { return value(); }
 
     /**
      * @brief Compares two hashed strings.
@@ -250,4 +251,4 @@ constexpr entt::hashed_wstring operator"" ENTT_HWS_SUFFIX(const wchar_t *str, st
 }
 
 
-#endif // ENTT_CORE_HASHED_STRING_HPP
+#endif

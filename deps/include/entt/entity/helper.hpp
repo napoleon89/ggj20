@@ -3,12 +3,44 @@
 
 
 #include <type_traits>
+#include "../core/type_traits.hpp"
 #include "../config/config.h"
-#include "../signal/sigh.hpp"
-#include "registry.hpp"
+#include "fwd.hpp"
 
 
 namespace entt {
+
+
+/**
+ * @brief Alias for exclusion lists.
+ * @tparam Type List of types.
+ */
+template<typename... Type>
+struct exclude_t: type_list<Type...> {};
+
+
+/**
+ * @brief Variable template for exclusion lists.
+ * @tparam Type List of types.
+ */
+template<typename... Type>
+constexpr exclude_t<Type...> exclude{};
+
+
+/**
+ * @brief Alias for lists of observed components.
+ * @tparam Type List of types.
+ */
+template<typename... Type>
+struct get_t: type_list<Type...>{};
+
+
+/**
+ * @brief Variable template for lists of observed components.
+ * @tparam Type List of types.
+ */
+template<typename... Type>
+constexpr get_t<Type...> get{};
 
 
 /**
@@ -136,4 +168,4 @@ using tag = std::integral_constant<ENTT_ID_TYPE, Value>;
 }
 
 
-#endif // ENTT_ENTITY_HELPER_HPP
+#endif

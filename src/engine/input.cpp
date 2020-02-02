@@ -104,14 +104,15 @@ Vec2 Input::getAnalogStick(const AnalogStick stick) {
 		case AnalogStick::Right: { x_axis = ControllerAxis::RightX; y_axis = ControllerAxis::RightY; } break;
 	}
 	
-	f32 x = Platform::getControllerAxis(controller, x_axis);
-	f32 y = -Platform::getControllerAxis(controller, y_axis);
+	result.x = Platform::getControllerAxis(controller, x_axis);
+	result.y = -Platform::getControllerAxis(controller, y_axis);
+
 	const f32 deadzone = 0.1f;
-	if(!Math::inRange(x, -deadzone, deadzone)) result.x = x;
-	if(!Math::inRange(y, -deadzone, deadzone)) result.y = y;
+	if(Vec2::lengthSquared(result) >= deadzone * deadzone) {
+		return result;
+	}
 	
-	// result = Vec2::normalize(result);
-	return result;
+	return Vec2();
 }
 
 f32 Input::getTrigger(const Trigger trigger) {
@@ -122,11 +123,11 @@ f32 Input::getTrigger(const Trigger trigger) {
 	}
 
 	f32 value = Platform::getControllerAxis(controller, axis);
-	const f32 deadzone = 0.3f;
-	// if(value >= deadzone) {
+	const f32 deadzone = 0.2f;
+	if(value >= deadzone) {
 		return value;
-	// }
-	// return 0.0f;
+	}
+	return 0.0f;
 }
 
 bool Input::isControllerButtonDown(const ControllerButton button) {
@@ -138,3 +139,5 @@ bool Input::isControllerButtonDownOnce(const ControllerButton button) {
 	return state.is_down && !state.was_down;
 	
 }
+
+

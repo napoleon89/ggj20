@@ -165,6 +165,15 @@ int main(int arg_count, char* args[]) {
 	Assets::shaders.sprite = loadShaderFromFile("sprite");
 	Assets::shaders.imgui = loadShaderFromFile("imgui");
 	Assets::shaders.editor = loadShaderFromFile("editor");
+
+	Assets::bug = loadTextureFromFile("data/textures/bug");
+	Assets::cracker = loadTextureFromFile("data/textures/cracker");
+	Assets::player = loadTextureFromFile("data/textures/player");
+	Assets::vs = loadTextureFromFile("data/textures/vs");
+	Assets::drone = loadTextureFromFile("data/textures/drone");
+	Assets::medkit = loadTextureFromFile("data/textures/medkit");
+	Assets::grenade = loadTextureFromFile("data/textures/grenade");
+	Assets::bullet = loadTextureFromFile("data/textures/bullet");
 	
 	ImGui::CreateContext();
 	ImGuiImpl::init(window, &Assets::shaders.imgui);
@@ -221,7 +230,6 @@ int main(int arg_count, char* args[]) {
 			Platform::processEvents(window);	
 		}
 
-		
 		DebugRenderQueue::startframe();
 		Input::processKeys();
 		ImGuiImpl::newFrame(window, delta);
@@ -242,6 +250,7 @@ int main(int arg_count, char* args[]) {
 				ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 			{
 				ImGui::Text("Frame time: %.3f", delta * 1000.0f);
+				ImGui::Text("Difficulty: %.6f", game->difficulty);
 			}
 			ImGui::End();
 		}

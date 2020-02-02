@@ -229,25 +229,3 @@ template<>
 const Type *Reflection::getType<Settings>() { 
 	return (const Type *)getStruct<Settings>();
 }
-template<>
-Class *Reflection::getStruct<Camera>() {
-	static Class result;
-	result.name = "Camera";
-	result.fields = new Field[1];
-	result.field_count = 1;
-	result.size = sizeof(Camera);
-
-	result.fields[0].type = getType<Vec2>();
-	result.fields[0].name = "position";
-	result.fields[0].offset = offsetof(Camera, position);
-	result.fields[0].static_address = nullptr;
-
-
-
-	return &result;
-}
-
-template<>
-const Type *Reflection::getType<Camera>() { 
-	return (const Type *)getStruct<Camera>();
-}

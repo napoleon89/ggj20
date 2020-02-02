@@ -19,6 +19,15 @@ struct Assets {
 
 	
 	inline static ShaderList shaders;
+
+	inline static Texture2D bug;
+	inline static Texture2D cracker;
+	inline static Texture2D player;
+	inline static Texture2D vs;
+	inline static Texture2D drone;
+	inline static Texture2D medkit;
+	inline static Texture2D grenade;
+	inline static Texture2D bullet;
 };
 
 Texture2D loadTexture(u8 *image_data, u64 image_size, RenderContext::Format format = RenderContext::Format::u32_unorm, int force_components = 0);
