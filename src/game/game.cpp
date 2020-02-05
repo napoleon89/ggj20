@@ -480,7 +480,7 @@ void GameState::updateGame(f32 delta, PlatformWindow *window) {
 
 	crack_spawn_timer -= delta;
 	if(crack_spawn_timer <= 0.0f) {
-		crack_spawn_timer = Math::randRange(4.0f, 7.0f) * difficulty;
+		crack_spawn_timer = Math::randRange(5.0f, 10.0f) * difficulty;
 		createCrack();
 	}
 
